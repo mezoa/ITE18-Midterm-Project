@@ -1,3 +1,5 @@
+import '../styles/globals.css'
+import '../styles/globals.css';
 import Header from '@importnext/components/Header';
 import { AuthProvider } from '../components/AuthContext';
 

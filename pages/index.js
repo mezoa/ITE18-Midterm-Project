@@ -1,47 +1,46 @@
-import { useState, useEffect } from 'react';
+import { signOut, useSession } from 'next-auth/react';
+import Head from 'next/head';
 import Link from 'next/link';
+import { useEffect } from 'react';
+import styles from '../styles/Home.module.css';
 
-const Homepage = () => {
-  const [isLogged, setIsLogged] = useState();
+export default function Home() {
+  const { data: session } = useSession();
 
-    useEffect(() => {
-        setIsLogged(!!localStorage.getItem('jwt'));
-    }, []);
-  
-  
+  useEffect(() => {
+    if (session == null) return;
+    console.log('session.jwt', session.jwt);
+  }, [session]);
+
   return (
-        <>
-            <h1 style={{ textAlign: "center" }}>Home</h1>
-            <hr />
-            <nav>
-              <ul style={{ display: "flex", columnGap: "20px", justifyContent: "end" }}>
-                    {!isLogged && ( 
-                        <li>
-                            <Link href="/auth/register">Register</Link>
-                        </li>
-                    )}
-                      <li>
-                      {!isLogged ? (
-                            <Link href="/auth/login">Login</Link>
-                        ) : (
-                            <Link href="/auth/logout">Logout</Link>
-                        )}
-                      </li>
-                  </ul>
-            </nav>
-            <hr />
-            <main>
-                {isLogged ? (
-                    <p>👋🏼 &nbsp;Welcome back, <b>{localStorage.username}</b>!</p>
-                ) : (
-                    <>
-                        <p>You are not logged in, yet.</p>
-                        <p>Log in to see something here.</p>
-                    </>
-                )}
-            </main>
-        </>
-    )
+    <div className={styles.container}>
+      <Head>
+        <title>Strapi - Next - NextAuth</title>
+      </Head>
+      <h1>{session ? 'Authenticated' : 'Not Authenticated'}</h1>
+      {session && (
+        <div style={{ marginBottom: 10 }}>
+          <h3>Session Data</h3>
+          <div>Email: {session.user.email}</div>
+          <div>JWT from Strapi: Check console</div>
+        </div>
+      )}
+      {session ? (
+        <button onClick={signOut}>Sign out</button>
+      ) : (
+        <Link href="/Auth/sign-in">
+          <button>Sign In</button>
+        </Link>
+      )}
+      <Link href="/protected">
+        <button
+          style={{
+            marginTop: 10,
+          }}
+        >
+          Protected Page
+        </button>
+      </Link>
+    </div>
+  );
 }
-
-export default Homepage;

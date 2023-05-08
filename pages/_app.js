@@ -1,16 +1,12 @@
-import '../styles/globals.css'
 import '../styles/globals.css';
-import Header from '@importnext/components/Header';
-import { AuthProvider } from '../components/AuthContext';
+import { SessionProvider } from 'next-auth/react';
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: {session, ...pageProps } }) {
   return (
-    <AuthProvider>
-      <Header />
+    <SessionProvider session={session}>
       <Component {...pageProps} />
-    </AuthProvider>
+    </SessionProvider>
   );
 }
-
 
 export default MyApp;
